@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:background="@drawable/item_select_bg"
+    android:orientation="vertical"
+
+    android:paddingLeft="16dp"
+    android:paddingTop="8dp"
+
+  >
+
+    <RelativeLayout
+        android:id="@+id/rl_first_image"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="8dp">
+
+        <ImageView
+            android:id="@+id/first_image"
+            android:layout_width="56dp"
+            android:layout_height="56dp" />
+
+        <TextView
+            android:id="@+id/tv_sign"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="4dp"
+            android:background="?attr/picture.folder_checked_dot"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_folder_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/rl_first_image"
+        android:text="相机胶卷"
+        android:textColor="@color/color_4d"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/image_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/tv_folder_name"
+        android:layout_alignLeft="@id/tv_folder_name"
+        android:text="0张"
+        android:textColor="@color/color_4d"
+        android:textSize="14sp" />
+    <TextView
+       android:layout_marginTop="63dp"
+        android:background="#E6E6E6"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+
+</RelativeLayout>
