@@ -1,1 +1,3 @@
-include ':app', ':bililibrary', ':ucrop', ':picture_library'
+include ':app',
+//        ':bililibrary',
+        ':ucrop', ':picture_library'

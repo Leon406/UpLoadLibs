@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import me.leon.libs.engine.image.L;
+
 //import com.luck.picture.lib.PictureSelector;
 //import com.luck.picture.lib.config.PictureConfig;
 
@@ -17,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-
 
     }
 
