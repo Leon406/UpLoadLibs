@@ -5,7 +5,7 @@ android {
     buildToolsVersion "26.0.2"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -17,52 +17,34 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-
-        lintOptions {
-            checkReleaseBuilds false
-            // Or, if you prefer, you can continue to check for errors in release builds,
-            // but continue the build even when errors are found:
-            abortOnError false
-        }
-}
-repositories {
-    jcenter()
-    flatDir {
-        dirs 'src/libs'
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
     }
 }
-//apply from: 'https://raw.githubusercontent.com/adwiv/android-fat-aar/master/fat-aar.gradle'
+
+//上传库是api 需要改为compile
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-//    embedded project(':ucrop')
+    compile project(':ucrop')
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:recyclerview-v7:26.+'
-    compile 'com.github.bumptech.glide:glide:4.0.0'
-    compile 'io.reactivex.rxjava2:rxjava:2.0.5'
+    compile 'com.github.bumptech.glide:glide:4.3.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.7'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    compile(name:'ucrop',ext:'aar')
+    compile 'me.leon406:rx_activity_result:1.0.6'
 }
-
-
-
-
 /** 以下开始是将Android Library上传到jcenter的相关配置**/
 
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-//group = groupId;
-group = 'com.github.Leon406';
 
-//项目的版本控制地址
-version = "1.0.3"
+// 版本号，下次更新是只需要更改版本号即可
+version = "1.2.3"
 //项目主页
 def siteUrl = 'https://github.com/Leon406'    // project homepage
 def gitUrl = 'https://github.com/Leon406' // project git到组织名称名字，必须填写
 group = groupId;
-//发布到JCenter上的项目名字，必须填写
-// 版本号，下次更新是只需要更改版本号即可
-/**  上面配置后上传至jcenter后的编译路径是这样的： compile 'cn.bluemobi.dylan:sqlitelibrary:1.0'  **/
 
 //生成源文件
 task sourcesJar(type: Jar) {
@@ -77,7 +59,7 @@ task javadoc(type: Javadoc) {
     options.charSet 'UTF-8'
     options.author true
     options.version true
-    options.links "https://github.com/linglongxin24/FastDev/tree/master/mylibrary/docs/javadoc"
+    // options.links "https://github.com/linglongxin24/FastDev/tree/master/mylibrary/docs/javadoc"
     failOnError false
 }
 
@@ -105,7 +87,8 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'pictureselector For Android'
+                name 'pictureselector For Android'  //根据实际情况修改
+                //artifactId = 'imagepicker'//项目名称
                 url siteUrl
                 licenses {
                     license {
@@ -147,3 +130,38 @@ bintray {
         publish = true
     }
 }
+
+
+//Pom手动配置
+//<dependencies>
+//<dependency>
+//<groupId>com.android.support</groupId>
+//      <artifactId>appcompat-v7</artifactId>
+//<version>26.+</version>
+//      <scope>compile</scope>
+//</dependency>
+//    <dependency>
+//      <groupId>io.reactivex.rxjava2</groupId>
+//<artifactId>rxjava</artifactId>
+//      <version>2.1.7</version>
+//<scope>compile</scope>
+//    </dependency>
+//<dependency>
+//<groupId>io.reactivex.rxjava2</groupId>
+//      <artifactId>rxandroid</artifactId>
+//<version>2.0.1</version>
+//      <scope>compile</scope>
+//</dependency>
+//	<dependency>
+//      <groupId>com.github.bumptech.glide</groupId>
+//<artifactId>glide</artifactId>
+//      <version>4.3.1</version>
+//<scope>compile</scope>
+//    </dependency>
+//<dependency>
+//<groupId>me.leon406</groupId>
+//      <artifactId>rx_activity_result</artifactId>
+//<version>1.0.6</version>
+//      <scope>compile</scope>
+//</dependency>
+//  </dependencies>

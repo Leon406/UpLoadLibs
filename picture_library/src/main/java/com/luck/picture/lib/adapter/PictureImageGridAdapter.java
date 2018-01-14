@@ -62,6 +62,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private PictureSelectionConfig config;
     private int mimeType;
     private boolean zoomAnim;
+    private HeaderViewHolder headerViewHolder;
 
     public PictureImageGridAdapter(Context context, PictureSelectionConfig config) {
         this.context = context;
@@ -90,6 +91,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.images = images;
         notifyDataSetChanged();
     }
+
+
 
     public void bindSelectImages(List<LocalMedia> images) {
         // 这里重新构构造一个新集合，不然会产生已选集合一变，结果集合也会添加的问题
@@ -131,11 +134,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == PictureConfig.TYPE_CAMERA) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picture_item_camera, parent, false);
-            return new HeaderViewHolder(view);
+            headerViewHolder = new HeaderViewHolder(view);
+            return headerViewHolder;
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picture_image_grid_item, parent, false);
             return new ViewHolder(view);
         }
+    }
+
+    public HeaderViewHolder getHeaderViewHolder() {
+        return headerViewHolder;
     }
 
     @Override
@@ -275,6 +283,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     context.getString(R.string.picture_tape)
                     : context.getString(R.string.picture_take_picture);
             tv_title_camera.setText(title);
+        }
+
+        public View getHeaderView() {
+            return headerView;
         }
     }
 

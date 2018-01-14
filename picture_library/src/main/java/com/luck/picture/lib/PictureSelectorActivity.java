@@ -10,14 +10,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.util.Log;
+import android.view.Surface;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -46,6 +53,7 @@ import com.luck.picture.lib.tools.LightStatusBarUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.StringUtils;
+import com.luck.picture.lib.widget.CameraPreviewView;
 import com.luck.picture.lib.widget.FolderPopWindow;
 import com.luck.picture.lib.widget.PhotoPopupWindow;
 import com.yalantis.ucrop.UCrop;
@@ -106,6 +114,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
         }
     };
+    private FrameLayout surf;
+    private FrameLayout mask;
+    private CameraPreviewView camera;
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -142,7 +153,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (!RxBus.getDefault().isRegistered(this)) {
             RxBus.getDefault().register(this);
         }
-
         rxPermissions = new RxPermissions(this);
         mHandler.sendEmptyMessage(STATUSBAR);
         if (config.camera) {
@@ -199,9 +209,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         rl_bottom = (RelativeLayout) findViewById(R.id.rl_bottom);
         id_ll_ok = (LinearLayout) findViewById(R.id.id_ll_ok);
         tv_empty = (TextView) findViewById(R.id.tv_empty);
+        surf = (FrameLayout) findViewById(R.id.surf);
+
+        camera = (CameraPreviewView) findViewById(R.id.camera);
+        mask = (FrameLayout) findViewById(R.id.mask);
 //        rl_bottom.setVisibility(config.selectionMode == PictureConfig.SINGLE ? View.GONE : View.VISIBLE);
         // TODO: 2017/12/12 不显示底部
-        rl_bottom.setVisibility( View.GONE); 
+        rl_bottom.setVisibility(View.GONE);
         isNumComplete(numComplete);
         if (config.mimeType == PictureMimeType.ofAll()) {
             popupWindow = new PhotoPopupWindow(this);
@@ -272,10 +286,46 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         adapter.bindSelectImages(selectionMedias);
         picture_recycler.setAdapter(adapter);
         String titleText = picture_title.getText().toString().trim();
+
+        surf.setVisibility(config.isCamera ? View.VISIBLE : View.GONE);
+
+        //照相机
+        ViewGroup.LayoutParams params = mask.getLayoutParams();
+        float density = getResources().getDisplayMetrics().density;
+        final int height = (int) ((ScreenUtils.getScreenWidth(this)) / 4 - density * 1 + 0.5);
+        params.height = height;
+        params.width = height;
+        mask.setLayoutParams(params);
+        mask.setVisibility(config.maxSelectNum == adapter.getSelectedImages().size() ? View.VISIBLE : View.GONE);
+
         if (config.isCamera) {
             config.isCamera = StringUtils.isCamera(titleText);
+            ViewGroup.LayoutParams layoutParams = surf.getLayoutParams();
+            layoutParams.height = height;
+            layoutParams.width = height;
+            surf.setLayoutParams(layoutParams);
+            picture_recycler.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    sumScroll += dy;
+                    Log.d(TAG, "dy:" + dy + " sumScroll : " + sumScroll + "  height " + height);
+                    if (surf.getVisibility() == View.VISIBLE && sumScroll > 0) {
+                        surf.setVisibility(View.GONE);
+                    } else if (surf.getVisibility() != View.VISIBLE && sumScroll <= 0) {
+                        surf.setVisibility(View.VISIBLE);
+                    }
+//                    surf.setVisibility(sumScroll > 0 ? View.GONE : View.VISIBLE);
+//                    ViewCompat.animate(surf)
+//                            .translationY(-dy)
+//                            .setDuration(10)
+//                            .start();
+
+                }
+            });
         }
     }
+
+    private int sumScroll;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -285,6 +335,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             PictureSelector.saveSelectorList(outState, selectedImages);
         }
     }
+
 
     /**
      * none number style
@@ -336,6 +387,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * open camera
      */
     public void startCamera() {
+
         // 防止快速点击，但是单独拍照不管
         if (!DoubleUtils.isFastDoubleClick() || config.camera) {
             switch (config.mimeType) {
@@ -461,7 +513,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.picture_left_back || id == R.id.picture_right) {
+        if (id == R.id.picture_right) {
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
@@ -470,6 +522,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 //                closeActivity();
             }
         }
+
+        if (id == R.id.picture_left_back) {
+            closeActivity();
+        }
+
         if (id == R.id.picture_title) {
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
@@ -858,6 +915,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param selectImages
      */
     public void changeImageNumber(List<LocalMedia> selectImages) {
+        mask.setVisibility(selectImages.size() == config.maxSelectNum ? View.VISIBLE : View.GONE);
         // 如果选择的视频没有预览功能
         String pictureType = selectImages.size() > 0
                 ? selectImages.get(0).getPictureType() : "";
@@ -1001,7 +1059,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
+                            } else {
+
                             }
+                            mask.setVisibility(selectedImages.size() == config.maxSelectNum ? View.VISIBLE : View.GONE);
                         }
                     }
                     if (adapter != null) {
@@ -1018,6 +1079,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             removeImage(lastImageId, eqVideo);
                         }
                     }
+                    break;
+                default:
                     break;
             }
         } else if (resultCode == RESULT_CANCELED) {
@@ -1081,6 +1144,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mediaPlayer.release();
             mediaPlayer = null;
         }
+
+        if (camera != null) {
+            Surface surface = camera.getHolder().getSurface();
+            if (surface.isValid()) {
+
+                surface.release();
+                camera = null;
+            }
+        }
+
+
     }
 
     @Override

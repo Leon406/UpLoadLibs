@@ -12,7 +12,14 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DoubleUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import io.reactivex.Observable;
+import me.leon.rxresult.Result;
+import me.leon.rxresult.RxActivityResult;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * author：luck
@@ -24,8 +31,10 @@ import java.util.List;
  */
 
 public class PictureSelectionModel {
+    public static final int ERR_CODE = -66;
     private PictureSelectionConfig selectionConfig;
     private PictureSelector selector;
+    private List<LocalMedia> images = Collections.EMPTY_LIST;
 
     public PictureSelectionModel(PictureSelector selector, int mimeType) {
         this.selector = selector;
@@ -259,7 +268,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param Less than how many KB images are not compressed
+     * @param size than how many KB images are not compressed
      * @return
      */
     public PictureSelectionModel minimumCompressSize(int size) {
@@ -295,7 +304,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param compress save path
+     * @param path save path
      * @return
      */
     public PictureSelectionModel compressSavePath(String path) {
@@ -409,4 +418,44 @@ public class PictureSelectionModel {
         }
     }
 
+
+    /**
+     * Start to select media and handle with Fragment callback.
+     */
+    public Observable<Result<Fragment>> forFragmentResult() {
+        Fragment fragment = selector.getFragment();
+
+        if (fragment == null) {
+            throw new NullPointerException("Fragment can not be null");
+        }
+        if (!DoubleUtils.isFastDoubleClick()) {
+
+            Intent intent = new Intent(fragment.getActivity(), PictureSelectorActivity.class);
+
+            Observable<Result<Fragment>> resultObservable = RxActivityResult.on(fragment).startIntent(intent);
+            return resultObservable;
+            //activity.overridePendingTransition(R.anim.a5, 0);
+        }
+        return Observable.just(new Result(fragment, -66, ERR_CODE, null));
+    }
+
+    /**
+     * Start to select media and handle with Activity callback.
+     */
+
+    public Observable<Result<Activity>> forActivityResult() {
+        Activity activity = selector.getActivity();
+        if (activity == null) {
+            throw new NullPointerException("Activity can not be null");
+        }
+        if (!DoubleUtils.isFastDoubleClick()) {
+
+            Intent intent = new Intent(activity, PictureSelectorActivity.class);
+
+            Observable<Result<Activity>> resultObservable = RxActivityResult.on(activity).startIntent(intent);
+            return resultObservable;
+            //activity.overridePendingTransition(R.anim.a5, 0);
+        }
+        return Observable.just(new Result(activity, -66, ERR_CODE, null));
+    }
 }

@@ -4,8 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/UpLoadLibs.iml" filepath="$PROJECT_DIR$/UpLoadLibs.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bililibrary/bililibrary.iml" filepath="$PROJECT_DIR$/bililibrary/bililibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/picture_library/picture_library.iml" filepath="$PROJECT_DIR$/picture_library/picture_library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rx_activity_result/rx_activity_result.iml" filepath="$PROJECT_DIR$/rx_activity_result/rx_activity_result.iml" />
       <module fileurl="file://$PROJECT_DIR$/ucrop/ucrop.iml" filepath="$PROJECT_DIR$/ucrop/ucrop.iml" />
     </modules>
   </component>

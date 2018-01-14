@@ -1,12 +1,10 @@
 package me.leon.uploadlibs;
 
 import android.Manifest;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-
-import me.leon.libs.engine.image.L;
 
 //import com.luck.picture.lib.PictureSelector;
 //import com.luck.picture.lib.config.PictureConfig;

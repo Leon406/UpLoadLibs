@@ -34,7 +34,7 @@ dependencies {
 //    compile 'me.leon406:pictureselector:1.0.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile 'com.github.Leon406:quickdev:-SNAPSHOT'
+   // compile 'com.github.Leon406:quickdev:-SNAPSHOT'
 //    compile(name:'picture',ext:'aar')
 //    compile project(':picture_library')
 }

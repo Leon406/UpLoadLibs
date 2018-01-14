@@ -119,7 +119,7 @@ public final class PictureSelector {
 
     /**
      * @param selectedImages
-     * @return put Selector  LocalMedia
+      *@desc  put Selector  LocalMedia
      */
     public static void saveSelectorList(Bundle outState, List<LocalMedia> selectedImages) {
         outState.putSerializable(PictureConfig.EXTRA_SELECT_LIST, (Serializable) selectedImages);
