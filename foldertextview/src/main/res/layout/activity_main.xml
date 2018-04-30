@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:padding="8dp"
+              android:orientation="vertical"
+              android:layout_height="match_parent">
+<!--默认 -->
+    <me.leon.foldertextview.FolderTextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text1" />
+    <!-- 自定义折叠行数,显示隐藏文字及颜色-->
+    <me.leon.foldertextview.FolderTextView
+        android:layout_marginTop="16dp"
+
+        app:fold_line="3"
+        app:fold_text="   hide"
+        app:unfold_text=" show"
+        app:unfold_text_color="#f0f"
+        app:fold_text_color="#0f0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text1" />
+    <!--不显示折叠-->
+    <me.leon.foldertextview.FolderTextView
+        android:id="@+id/tv2"
+        android:layout_marginTop="16dp"
+        app:fold_line="3"
+        app:noFold="true"
+        app:unfold_text_color="#f0f"
+        app:fold_text_color="#0f0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <me.leon.foldertextview.FolderTextView
+        android:layout_marginTop="16dp"
+        app:fold_line="4"
+        app:fold_text="   hide"
+        app:unfold_text=" show"
+        app:unfold_text_color="#f0f"
+        app:fold_text_color="#0f0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text1" />
+
+</LinearLayout>

@@ -9,8 +9,11 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/devsuit" />
+            <option value="$PROJECT_DIR$/foldertextview" />
             <option value="$PROJECT_DIR$/picture_library" />
             <option value="$PROJECT_DIR$/rx_activity_result" />
+            <option value="$PROJECT_DIR$/rxbus" />
             <option value="$PROJECT_DIR$/ucrop" />
           </set>
         </option>
