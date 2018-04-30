@@ -23,6 +23,10 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
@@ -30,11 +34,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    implementation 'me.leon406:rxbus:1.2.2'
     compile 'com.android.support:appcompat-v7:26.+'
 //    compile 'me.leon406:pictureselector:1.0.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-   // compile 'com.github.Leon406:quickdev:-SNAPSHOT'
+    // compile 'com.github.Leon406:quickdev:-SNAPSHOT'
 //    compile(name:'picture',ext:'aar')
 //    compile project(':picture_library')
 }

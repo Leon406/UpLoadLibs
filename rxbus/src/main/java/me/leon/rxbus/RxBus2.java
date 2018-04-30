@@ -11,9 +11,9 @@ import io.reactivex.subjects.Subject;
 
 /**
  * <p>
- * Created by YoKeyword on 2015/6/17.
- * modify to RxJava2 by Leon 2017/9/10
+ * migrate to RxJava2 by Leon 2017/9/10
  * support sticky event
+ * </p>
  */
 public class RxBus2 {
     private static volatile RxBus2 mDefaultInstance;
@@ -70,6 +70,8 @@ public class RxBus2 {
 
     public void unregister() {
         mDefaultInstance = null;
+        removeAllStickyEvents();
+
     }
 
     /**
@@ -133,7 +135,7 @@ public class RxBus2 {
     /**
      * remove  all sticky events
      */
-    public void removeAllStickyEvents() {
+    private void removeAllStickyEvents() {
             mStickyEventMap.clear();
     }
 }
