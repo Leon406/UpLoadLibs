@@ -14,7 +14,7 @@ public class ViewHelper {
     /**
      * @param visible false invisiable
      */
-    public void setVisible(View v, boolean visible) {
+    public static void setVisible(View v, boolean visible) {
         switch (v.getVisibility()) {
 
             case View.VISIBLE:
@@ -36,7 +36,7 @@ public class ViewHelper {
     /**
      * @param visible false GONE
      */
-    public void setVisibleOrGone(View v, boolean visible) {
+    public static void setVisibleOrGone(View v, boolean visible) {
         switch (v.getVisibility()) {
 
             case View.VISIBLE:

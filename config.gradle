@@ -1,32 +1,31 @@
 ext {
- //    Basic Android studio
+    //    Basic Android studio
     androidGradlePlugin = 'com.android.tools.build:gradle:2.3.3'
-    buildToolsVer = '26.0.2'
+    buildToolsVer = '27.0.3'
     minVer = 16
-    targetVer = 26
+    targetVer = 27
 
 
-    supportVersion = '26.0.+'    //   android support
+    supportVersion = '27.1.1'    //   android support
     //Http Engine
     retrofitVersion = '2.3.0'
 
     //rx
-    rxAndroidVersion = '2.0.1'
-    rxJavaVersion = '2.1.7'
-    rxLifeCycleVersion ='2.2.1'
+    rxAndroidVersion = '2.0.2'
+    rxJavaVersion = '2.1.8'
+    rxLifeCycleVersion = '2.2.1'
     //Image
     glideVersion = '4.3.1'
     circleImageVersion = '1.3.0'
 
 
     butterKnifeVersion = '8.8.1'
-    rxBindVersion ='2.0.0'
+    rxBindVersion = '2.0.0'
 
     //Test
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
     robolectricVersion = '3.0'
-
 
 //---------------------------------------------support----------------------------------------------
     supportPackage = 'com.android.support'
@@ -50,27 +49,24 @@ ext {
 //---------------------------------------------Rx --------------------------------------------------
     reactivePackage = 'io.reactivex.rxjava2'
 
-            rxAndroid= buildDepend(reactivePackage, 'rxandroid', rxAndroidVersion)
-            rxJava   = buildDepend(reactivePackage, 'rxjava', rxJavaVersion)
-    rxLifecycle ="com.trello.rxlifecycle2:rxlifecycle:$rxLifeCycleVersion"
-    rxLifecycleAndroid ="com.trello.rxlifecycle2:rxlifecycle-android:$rxLifeCycleVersion"
-    rxLifecycleCmp ="com.trello.rxlifecycle2:rxlifecycle-components:$rxLifeCycleVersion"
+    rxAndroid = buildDepend(reactivePackage, 'rxandroid', rxAndroidVersion)
+    rxJava = buildDepend(reactivePackage, 'rxjava', rxJavaVersion)
+    rxLifecycle = "com.trello.rxlifecycle2:rxlifecycle:$rxLifeCycleVersion"
+    rxLifecycleAndroid = "com.trello.rxlifecycle2:rxlifecycle-android:$rxLifeCycleVersion"
+    rxLifecycleCmp = "com.trello.rxlifecycle2:rxlifecycle-components:$rxLifeCycleVersion"
 
 
-    rxBind ="com.jakewharton.rxbinding2:rxbinding:$rxBindVersion"
-    rxBindSup ="com.jakewharton.rxbinding2:rxbinding-support-v4:$rxBindVersion"
-    rxBindApp="com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxBindVersion"
-    rxBindDesign="com.jakewharton.rxbinding2:rxbinding-design:$rxBindVersion"
-rxBindRec="com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxBindVersion"
-rxBindLean="com.jakewharton.rxbinding2:rxbinding-leanback-v17:$rxBindVersion"
-
-
+    rxBind = "com.jakewharton.rxbinding2:rxbinding:$rxBindVersion"
+    rxBindSup = "com.jakewharton.rxbinding2:rxbinding-support-v4:$rxBindVersion"
+    rxBindApp = "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxBindVersion"
+    rxBindDesign = "com.jakewharton.rxbinding2:rxbinding-design:$rxBindVersion"
+    rxBindRec = "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxBindVersion"
+    rxBindLean = "com.jakewharton.rxbinding2:rxbinding-leanback-v17:$rxBindVersion"
 
 //---------------------------------------------IOC--------------------------------------------------
 
-    butterKnife      = "com.jakewharton:butterknife:$butterKnifeVersion"
-    butterKnifeAPT   = "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
-
+    butterKnife = "com.jakewharton:butterknife:$butterKnifeVersion"
+    butterKnifeAPT = "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
 
 //--------------------------------------------Image Engine------------------------------------------
     glidePackage = 'com.github.bumptech.glide'
