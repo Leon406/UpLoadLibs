@@ -18,7 +18,7 @@ public class CameraPreviewView extends SurfaceView implements
         SurfaceHolder.Callback{
     private static final String TAG = "CameraPreviewView";
   
-    private static SurfaceHolder holder;
+    private  SurfaceHolder holder;
     private Camera mCamera;
 
     public CameraPreviewView(Context context) {
@@ -62,4 +62,13 @@ public class CameraPreviewView extends SurfaceView implements
         }  
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        Log.i(TAG, "surfaceDestroyed...");
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
+        super.onDetachedFromWindow();
+    }
 }

@@ -41,7 +41,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     // compile 'com.github.Leon406:quickdev:-SNAPSHOT'
 //    compile(name:'picture',ext:'aar')
-//    compile project(':picture_library')
+    compile project(':picture_library')
 }
 repositories {
     jcenter()

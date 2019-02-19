@@ -156,7 +156,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         rxPermissions = new RxPermissions(this);
         mHandler.sendEmptyMessage(STATUSBAR);
         if (config.camera) {
-            setTheme(R.style.activity_Theme_Transparent);
+//            setTheme(R.style.activity_Theme_Transparent);
             if (savedInstanceState == null) {
                 rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
                         .subscribe(new Observer<Boolean>() {
@@ -313,6 +313,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         surf.setVisibility(View.GONE);
                     } else if (surf.getVisibility() != View.VISIBLE && sumScroll <= 0) {
                         surf.setVisibility(View.VISIBLE);
+                    }
+                    if (mask.getVisibility() == View.VISIBLE) {
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mask.getLayoutParams();
+                        params.topMargin = -sumScroll;
+                        mask.setLayoutParams(params);
                     }
 //                    surf.setVisibility(sumScroll > 0 ? View.GONE : View.VISIBLE);
 //                    ViewCompat.animate(surf)
@@ -1130,11 +1135,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+
         if (RxBus.getDefault().isRegistered(this)) {
             RxBus.getDefault().unregister(this);
         }
         ImagesObservable.getInstance().clearLocalMedia();
+        if (camera != null) {
+            Surface surface = camera.getHolder().getSurface();
+            if (surface.isValid()) {
+
+                surface.release();
+                camera = null;
+            }
+        }
         if (animation != null) {
             animation.cancel();
             animation = null;
@@ -1145,15 +1158,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mediaPlayer = null;
         }
 
-        if (camera != null) {
-            Surface surface = camera.getHolder().getSurface();
-            if (surface.isValid()) {
 
-                surface.release();
-                camera = null;
-            }
-        }
-
+        super.onDestroy();
 
     }
 

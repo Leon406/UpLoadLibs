@@ -4,8 +4,8 @@ import android.Manifest;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import me.leon.rxbus.RxBus2;
 
@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
 
 
-
     }
 
     public void open(View view) {
@@ -37,9 +36,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void post(View view) {
-        RxBus2.getDefault().postSticky("Hello");
-
-        Main2Activity.start(this);
+        ImagePicker.openDynamicGallery(this)
+                .subscribe(l -> {
+                    Log.w("result", l.toString());
+                });
+//        RxBus2.getDefault().postSticky("Hello");
+//
+//        Main2Activity.start(this);
     }
 
     @Override

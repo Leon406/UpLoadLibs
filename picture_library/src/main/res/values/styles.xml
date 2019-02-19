@@ -19,14 +19,16 @@
     <style name="activity.Theme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowDisablePreview">true</item>
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
     <style name="activity.Theme.Transparent" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowDisablePreview">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
@@ -117,5 +119,6 @@
         <!--相册文件夹列表选中图标-->
         <item name="picture.folder_checked_dot">@drawable/orange_oval</item>
     </style>
+
 
 </resources>
