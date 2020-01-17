@@ -20,5 +20,11 @@
         android:text="Hello World!"
         android:onClick="open"
       />
+ <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="tt"
+        android:onClick="tt"
+      />
 
 </LinearLayout>

@@ -5,9 +5,11 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,8 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DebugUtil;
+import com.luck.picture.lib.tools.PictureFileUtils;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
 
@@ -93,7 +97,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
 
-
     public void bindSelectImages(List<LocalMedia> images) {
         // 这里重新构构造一个新集合，不然会产生已选集合一变，结果集合也会添加的问题
         List<LocalMedia> selection = new ArrayList<>();
@@ -152,12 +155,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         if (getItemViewType(position) == PictureConfig.TYPE_CAMERA) {
             HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
-            headerHolder.headerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (imageSelectChangedListener != null) {
-                        imageSelectChangedListener.onTakePhoto();
-                    }
+            headerHolder.headerView.setOnClickListener(v -> {
+                if (imageSelectChangedListener != null) {
+                    imageSelectChangedListener.onTakePhoto();
                 }
             });
         } else {
@@ -172,10 +172,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 notifyCheckChanged(contentHolder, image);
             }
 
-
             contentHolder.iv_border.setVisibility(isSelected(image) ? View.VISIBLE : View.GONE);
             if (selectImages.size() >= config.maxSelectNum) {
-//                contentHolder.iv_mask.setVisibility( isSelected(image)? View.GONE : View.VISIBLE);
                 contentHolder.iv_mask.setVisibility(isSelected(image) ? View.GONE : View.VISIBLE);
             } else {
                 contentHolder.iv_mask.setVisibility(View.GONE);
@@ -208,9 +206,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 } else {
                     options.override(overrideWidth, overrideHeight);
                 }
-                options.diskCacheStrategy(DiskCacheStrategy.ALL);
-                options.centerCrop();
-                options.placeholder(R.drawable.image_placeholder);
+                options.diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop()
+                        .placeholder(R.drawable.image_placeholder);
                 Glide.with(context)
                         .asBitmap()
                         .load(path)
@@ -218,46 +216,49 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         .into(contentHolder.iv_picture);
             }
             if (enablePreview || enablePreviewVideo || enablePreviewAudio) {
-                contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // 如原图路径不存在或者路径存在但文件不存在
-                        if (!new File(path).exists()) {
-                            Toast.makeText(context, context.getString(R.string.picture_error), Toast.LENGTH_LONG)
-                                    .show();
-                            return;
-                        }
-                        changeCheckboxState(contentHolder, image);
-                    }
-                });
-
-            }
-            contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                contentHolder.ll_check.setOnClickListener(v -> {
                     // 如原图路径不存在或者路径存在但文件不存在
-                    if (!new File(path).exists()) {
+                    Log.d("Picker",path);
+                    String newPath = SdkVersionUtils.checkedAndroid_Q()
+                            ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
+                    if (newPath == null) {
+
+                        return;
+                    }
+                    if (!new File(newPath).exists()) {
                         Toast.makeText(context, context.getString(R.string.picture_error), Toast.LENGTH_LONG)
                                 .show();
                         return;
                     }
-                    if (picture == PictureConfig.TYPE_IMAGE && (enablePreview
-                            || selectMode == PictureConfig.SINGLE)) {
-                        int index = showCamera ? position - 1 : position;
-                        imageSelectChangedListener.onPictureClick(image, index);
+                    changeCheckboxState(contentHolder, image);
+                });
+
+            }
+            contentHolder.contentView.setOnClickListener(v -> {
+                // 如原图路径不存在或者路径存在但文件不存在
+                String newPath = SdkVersionUtils.checkedAndroid_Q()
+                        ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
+                if (!new File(newPath).exists()) {
+                    Toast.makeText(context, context.getString(R.string.picture_error), Toast.LENGTH_LONG)
+                            .show();
+                    return;
+                }
+                if (picture == PictureConfig.TYPE_IMAGE && (enablePreview
+                        || selectMode == PictureConfig.SINGLE)) {
+                    int index = showCamera ? position - 1 : position;
+                    imageSelectChangedListener.onPictureClick(image, index);
 
 
-                    } else if (picture == PictureConfig.TYPE_VIDEO && (enablePreviewVideo
-                            || selectMode == PictureConfig.SINGLE)) {
-                        int index = showCamera ? position - 1 : position;
-                        imageSelectChangedListener.onPictureClick(image, index);
-                    } else if (picture == PictureConfig.TYPE_AUDIO && (enablePreviewAudio
-                            || selectMode == PictureConfig.SINGLE)) {
-                        int index = showCamera ? position - 1 : position;
-                        imageSelectChangedListener.onPictureClick(image, index);
-                    } else {
-                        changeCheckboxState(contentHolder, image);
-                    }
+                } else if (picture == PictureConfig.TYPE_VIDEO && (enablePreviewVideo
+                        || selectMode == PictureConfig.SINGLE)) {
+                    int index = showCamera ? position - 1 : position;
+                    imageSelectChangedListener.onPictureClick(image, index);
+                } else if (picture == PictureConfig.TYPE_AUDIO && (enablePreviewAudio
+                        || selectMode == PictureConfig.SINGLE)) {
+                    int index = showCamera ? position - 1 : position;
+                    imageSelectChangedListener.onPictureClick(image, index);
+                } else {
+                    changeCheckboxState(contentHolder, image);
                 }
             });
 

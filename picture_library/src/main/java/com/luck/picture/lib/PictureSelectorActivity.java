@@ -425,25 +425,22 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
-    /**
-     * start to camera、preview、crop
-     */
     public void startOpenCamera() {
-
-//        pickPic();
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Uri imageUri;
-        if (SdkVersionUtils.checkedAndroid_Q()) {
-            imageUri = PhotoTools.createImagePathUri(getApplicationContext());
-            cameraPath = imageUri.toString();
-        } else if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            int type = config.mimeType == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE : config.mimeType;
-            File cameraFile = PictureFileUtils.createCameraFile(this,
-                    type,
-                    outputCameraPath, config.suffixType);
-            cameraPath = cameraFile.getAbsolutePath();
-            imageUri = parUri(cameraFile);
-            imageUri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            Uri imageUri;
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                imageUri = PhotoTools.createImagePathUri(getApplicationContext());
+                cameraPath = imageUri.toString();
+            } else {
+                int type = config.mimeType == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE
+                        : config.mimeType;
+                File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
+                        type,
+                        outputCameraPath, config.suffixType);
+                cameraPath = cameraFile.getAbsolutePath();
+                imageUri = parUri(cameraFile);
+            }
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
         }

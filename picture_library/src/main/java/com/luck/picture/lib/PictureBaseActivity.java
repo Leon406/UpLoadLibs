@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.luck.picture.lib.compress.Luban;
@@ -41,8 +42,6 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -394,22 +393,6 @@ public class PictureBaseActivity extends FragmentActivity {
      *
      * @param images
      */
-//    protected void onResult(List<LocalMedia> images) {
-//        dismissCompressDialog();
-//        if (config.camera
-//                && config.selectionMode == PictureConfig.MULTIPLE
-//                && selectionMedias != null) {
-//            images.addAll(images.size() > 0 ? images.size() - 1 : 0, selectionMedias);
-//        }
-//        Intent intent = PictureSelector.putIntentResult(images);
-//        setResult(RESULT_OK, intent);
-//        closeActivity();
-//    }
-    /**
-     * return image result
-     *
-     * @param images
-     */
     protected void onResult(List<LocalMedia> images) {
         boolean androidQ = SdkVersionUtils.checkedAndroid_Q();
         boolean isVideo = PictureMimeType.isVideo(images != null && images.size() > 0
@@ -440,6 +423,7 @@ public class PictureBaseActivity extends FragmentActivity {
                             Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(getApplicationContext(),
                                     Uri.parse(media.getPath()));
                             BitmapUtils.saveBitmap(bitmapFromUri, newPath);
+                            Log.d("Picker","onResult :" +newPath);
                             media.setPath(newPath);
                         }
 
@@ -465,6 +449,7 @@ public class PictureBaseActivity extends FragmentActivity {
             }
         });
     }
+
     /**
      * Close Activity
      */
