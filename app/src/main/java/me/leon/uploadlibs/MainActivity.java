@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         ImagePicker.openDynamicGallery(this)
                 .subscribe(l -> {
                     Log.w("result", l.toString());
-                });
+                },throwable -> Log.e("eeeeee",Log.getStackTraceString(throwable)));
 //        RxBus2.getDefault().postSticky("Hello");
 //
 //        Main2Activity.start(this);

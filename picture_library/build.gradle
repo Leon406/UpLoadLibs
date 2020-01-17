@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion targetVer
-    buildToolsVersion buildToolsVer
+
 
     defaultConfig {
         minSdkVersion minVer
@@ -30,16 +30,19 @@ android {
 
 //上传库是api 需要改为compile
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    api fileTree(include: ['*.jar'], dir: 'libs')
 //    compile project(':ucrop')
-    compile sup.appCompat
-    compile sup.recyclerView
+    api sup.appCompat
+    api sup.recyclerView
 
-    compile rxJava
-    compile rxAndroid
-    compile sup.appCompat
-    compile glide
-    compile 'me.leon406:ucrop:1.0.0'
-    compile 'me.leon406:rx_activity_result:1.0.6'
+    api rxJava
+    api rxAndroid
+    api glide
+    api('me.leon406:ucrop:1.0.0') {
+        exclude group: 'com.android.support', module: "appcompat-v7"
+    }
+    api('me.leon406:rx_activity_result:1.0.6') {
+        exclude group: 'com.android.support', module: "appcompat-v7"
+    }
 }
 apply from: "bintray.gradle"

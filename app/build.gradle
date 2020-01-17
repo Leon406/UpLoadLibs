@@ -1,12 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 29
     defaultConfig {
         applicationId "me.leon.uploadlibs"
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -34,14 +33,16 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'me.leon406:rxbus:1.2.2'
-    compile 'com.android.support:appcompat-v7:26.+'
+    implementation ('me.leon406:rxbus:1.2.2') {
+        exclude group: 'com.android.support', module: "appcompat-v7"
+    }
+    implementation 'com.android.support:appcompat-v7:28.0.0'
 //    compile 'me.leon406:pictureselector:1.0.2'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
     // compile 'com.github.Leon406:quickdev:-SNAPSHOT'
 //    compile(name:'picture',ext:'aar')
-    compile project(':picture_library')
+    implementation project(':picture_library')
 }
 repositories {
     jcenter()
