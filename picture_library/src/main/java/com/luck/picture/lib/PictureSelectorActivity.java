@@ -50,8 +50,10 @@ import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.LightStatusBarUtils;
+import com.luck.picture.lib.tools.PhotoTools;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.widget.CameraPreviewView;
 import com.luck.picture.lib.widget.FolderPopWindow;
@@ -427,14 +429,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * start to camera、preview、crop
      */
     public void startOpenCamera() {
+
+//        pickPic();
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+        Uri imageUri;
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            imageUri = PhotoTools.createImagePathUri(getApplicationContext());
+            cameraPath = imageUri.toString();
+        } else if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             int type = config.mimeType == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE : config.mimeType;
             File cameraFile = PictureFileUtils.createCameraFile(this,
                     type,
                     outputCameraPath, config.suffixType);
             cameraPath = cameraFile.getAbsolutePath();
-            Uri imageUri = parUri(cameraFile);
+            imageUri = parUri(cameraFile);
+            imageUri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
         }
@@ -446,11 +455,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     public void startOpenCameraVideo() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            File cameraFile = PictureFileUtils.createCameraFile(this, config.mimeType ==
-                            PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.mimeType,
-                    outputCameraPath, config.suffixType);
-            cameraPath = cameraFile.getAbsolutePath();
-            Uri imageUri = parUri(cameraFile);
+
+            Uri imageUri;
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                imageUri = PhotoTools.createImageVideoUri(getApplicationContext());
+                cameraPath = imageUri.toString();
+            } else {
+                File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(), config.mimeType ==
+                                PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.mimeType,
+                        outputCameraPath, config.suffixType);
+                cameraPath = cameraFile.getAbsolutePath();
+                imageUri = parUri(cameraFile);
+            }
+
             DebugUtil.i(TAG, "video second:" + config.recordVideoSecond);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, config.recordVideoSecond);

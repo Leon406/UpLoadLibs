@@ -534,6 +534,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         }
     }
 
+    @Override
     public void onResult(List<LocalMedia> images) {
         RxBus.getDefault().post(new EventEntity(PictureConfig.PREVIEW_DATA_FLAG, images));
         // 如果开启了压缩，先不关闭此页面，PictureImageGridActivity压缩完在通知关闭

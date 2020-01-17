@@ -160,7 +160,7 @@ public class ImagePicker {
         return PictureSelector.create(activity)
                 .openGallery(PictureMimeType.ofImage())
 //                .theme(R.style.picture_QQ_style)
-                .maxSelectNum(20) //按实际需求
+                .maxSelectNum(9) //按实际需求
                 .minSelectNum(0)
                 .selectionMode(PictureConfig.MULTIPLE)
                 .previewImage(true)
@@ -174,7 +174,7 @@ public class ImagePicker {
                 .flatMap(result -> Observable.fromIterable(
                         PictureSelector.obtainMultipleResult(result.data()))
                         // .map(image -> image.getPath())
-                ).map(media -> media.getPath())
+                ).map(LocalMedia::getCompressPath)
                 .toList();
     }
 

@@ -12,6 +12,7 @@ ext {
 }
 buildscript {
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' }
         jcenter()
         google()
     }
@@ -26,6 +27,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' }
         google()
         jcenter()
         maven { url 'https://maven.google.com' }
