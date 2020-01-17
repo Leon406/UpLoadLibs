@@ -3,6 +3,7 @@ package com.luck.picture.lib.compress;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -67,6 +68,7 @@ class Engine {
   }
 
   File compress() throws IOException {
+    Log.d("Picker",  "compress start " + System.currentTimeMillis());
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.inSampleSize = computeSize();
 
@@ -84,7 +86,7 @@ class Engine {
     fos.flush();
     fos.close();
     stream.close();
-
+    Log.d("Picker",  "compress end " + System.currentTimeMillis());
     return tagImg;
   }
 }

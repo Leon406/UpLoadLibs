@@ -165,7 +165,7 @@ public class ImagePicker {
                 .selectionMode(PictureConfig.MULTIPLE)
                 .previewImage(true)
                 .isCamera(true) //是否显示拍照
-                .compress(true)
+                .compress(false)
 //                .selectionMedia(selectedList)
                 .forActivityResult()
                 .filter(result -> result.resultCode() == -1 && result.data() != null)

@@ -21,8 +21,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class Luban implements Handler.Callback {
@@ -43,6 +45,7 @@ public class Luban implements Handler.Callback {
     private List<InputStreamProvider> mStreamProviders;
     private List<String> mPaths;
     private List<LocalMedia> mediaList;
+
     private int index = -1;
     private Handler mHandler;
 
@@ -256,6 +259,8 @@ public class Luban implements Handler.Callback {
         private List<InputStreamProvider> mStreamProviders;
         private List<String> mPaths;
         private List<LocalMedia> mediaList;
+        private ThreadLocal<Long> startTime = new ThreadLocal<>();
+        private Map<String, String> cutMaps = new HashMap<>();
 
         Builder(Context context) {
             this.context = context;
@@ -289,23 +294,37 @@ public class Luban implements Handler.Callback {
             return this;
         }
 
-        private Builder load(final LocalMedia media) {
+        public Builder load(final LocalMedia media) {
             mStreamProviders.add(new InputStreamAdapter() {
                 @Override
                 public InputStream openInternal() throws IOException {
                     boolean androidQ = SdkVersionUtils.checkedAndroid_Q();
                     if (androidQ) {
                         // Android Q 由于沙盒原因需要把外部图片资源复制到自己应用内
+                        startTime.set(System.currentTimeMillis());
+                        Log.d("Picker", media.getPath() + " adapter start " + startTime);
                         boolean isCut = media.isCut();
                         String path;
                         if (isCut) {
                             path = media.getCutPath();
+                            Log.d("Picker", media.getPath() + " cut");
                         } else {
-                            Uri parse = Uri.parse(media.getPath());
-                            Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(context, parse);
-                            path = PictureFileUtils.getDiskCacheDir(context) + System.currentTimeMillis() + ".png";
-                            BitmapUtils.saveBitmap(bitmapFromUri, path);
-                            media.setCompressPath(path);
+                            Log.d("Picker", media.getPath() + " openInternal.");
+
+                            // TODO: 2020/1/17 0017  暂时先用key map 记录已经copy的外部资源
+
+                            path = cutMaps.get(media.getPath());
+                            if (path == null) {
+                                Log.d("Picker", media.getPath() + " bitmap ....");
+                                Uri parse = Uri.parse(media.getPath());
+                                Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(context, parse);
+                                path = PictureFileUtils.getDiskCacheDir(context) + System.currentTimeMillis() + ".png";
+                                BitmapUtils.saveBitmap(bitmapFromUri, path);
+                                media.setCompressPath(path);
+                                cutMaps.put(media.getPath(), path);
+                                Log.d("Picker", media.getPath() + " bitmap .... end");
+                            }
+
                         }
                         return new FileInputStream(path);
                     }

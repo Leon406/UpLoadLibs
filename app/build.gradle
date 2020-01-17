@@ -42,7 +42,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     // compile 'com.github.Leon406:quickdev:-SNAPSHOT'
 //    compile(name:'picture',ext:'aar')
-    implementation project(':picture_library')
+    implementation 'me.leon406:picture_library:1.4.0.alpha'
+//    implementation project(':picture_library')
 }
 repositories {
     jcenter()

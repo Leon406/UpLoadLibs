@@ -1,5 +1,6 @@
 package com.luck.picture.lib;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -179,23 +180,50 @@ public class PictureBaseActivity extends FragmentActivity {
     /**
      * compressImage
      */
+    @SuppressLint("CheckResult")
     protected void compressImage(final List<LocalMedia> result) {
         showCompressDialog();
         if (config.synOrAsy) {
-            Flowable.just(result)
-                    .observeOn(Schedulers.io())
-                    .map(list -> {
-                        List<File> files = Luban.with(mContext)
-                                .setTargetDir(config.compressSavePath)
+            long start = System.currentTimeMillis();
+            Log.d("Picker", "aSync :" + start);
+            Flowable.fromIterable(result)
+                    .parallel()
+                    .runOn(Schedulers.io())
+                    .flatMap(localMedia -> {
+                        Log.d("Picker", "aSync :" + Thread.currentThread().getName());
+                        return Flowable.just(Luban.with(mContext).setTargetDir(config.compressSavePath)
+                                .load(localMedia)
                                 .ignoreBy(config.minimumCompressSize)
-                                .loadMediaData(list).get();
-                        if (files == null) {
-                            files = new ArrayList<>();
-                        }
-                        return files;
+                                .get().get(0));
                     })
+                    .sequential()
+                    .toList()
+                    .filter(files -> files != null)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(files -> handleCompressCallBack(result, files));
+                    .subscribe(files -> {
+                        Log.d("Picker", "aSync  takes time:" + (System.currentTimeMillis() - start));
+                        Log.d("Picker", "aSync   files:" + files.toString());
+                        handleCompressCallBack(result, files);
+                    });
+
+//            Flowable.just(result)
+//                    .observeOn(Schedulers.io())
+//                    .map(list -> {
+//                        List<File> files = Luban.with(mContext)
+//                                .setTargetDir(config.compressSavePath)
+//                                .ignoreBy(config.minimumCompressSize)
+//                                .loadMediaData(list).get();
+//                        if (files == null) {
+//                            files = new ArrayList<>();
+//                        }
+//                        return files;
+//                    })
+//                    .observeOn(AndroidSchedulers.mainThread())
+//   .subscribe(files -> {
+//                Log.d("Picker", "aSync  takes time:" + (System.currentTimeMillis() - start));
+//                Log.d("Picker", "aSync   files:" + files.toString());
+//                handleCompressCallBack(result, files);
+//            });
         } else {
             Luban.with(this)
                     .loadMediaData(result)
@@ -423,7 +451,7 @@ public class PictureBaseActivity extends FragmentActivity {
                             Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(getApplicationContext(),
                                     Uri.parse(media.getPath()));
                             BitmapUtils.saveBitmap(bitmapFromUri, newPath);
-                            Log.d("Picker","onResult :" +newPath);
+                            Log.d("Picker", "onResult :" + newPath);
                             media.setPath(newPath);
                         }
 
